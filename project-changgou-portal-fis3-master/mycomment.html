@@ -6,12 +6,19 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE">
 	<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
 	<title>我的评价</title>
-	<link rel="icon" href="/img/favicon.ico">
+	<link rel="icon" href="img/favicon.ico">
+	<link rel="stylesheet" type="text/css" href="css/all.css" />
+	<link rel="stylesheet" type="text/css" href="css/pages-application.css" />
+	<link rel="stylesheet" type="text/css" href="css/pages-mycomment.css" />
+	<!-- 引入样式 -->
+	<script type="text/javascript" src="js/axios.js"></script>
+	<script type="text/javascript" src="js/vue.js"></script>
+	<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="elementui/index.css">
+	<script src="elementui/index.js"></script>
 
 
-	<link rel="stylesheet" type="text/css" href="http://resources.changgou.com/css/all.css" />
-	<link rel="stylesheet" type="text/css" href="http://resources.changgou.com/css/pages-application.css" />
-	<link rel="stylesheet" type="text/css" href="http://resources.changgou.com/css/pages-mycomment.css" />
+
 </head>
 
 <body>
@@ -68,7 +75,7 @@
 									</span>
 								</li>
 								<li class="f-item">
-									<span>网站导航</li>
+									<span>网站导航</span></li>
 							</ul>
 						</div>
 
@@ -103,19 +110,18 @@
 	</div>
 
 	<!-- 评价订单 -->
-	<div class="mycomment">
+	<div class="mycomment" id="app">
 		<div class="py-container">
 			<div class="head">
-				<p class="tit">评价订单</p>
+				<p class="tit">商品评价</p>
 				<p class="num">
-					<span class="gray">订单号：</span>6456952641&nbsp;&nbsp;&nbsp;&nbsp;
-					<span class="gray">2017-09-22 09:06:05</span>
+					<span class="gray">订单号：</span>{{comment.orderid}}&nbsp;&nbsp;&nbsp;&nbsp;
 				</p>
 			</div>
 			<div class="service">
 				<div class="left">
 					<div class="inner">
-						<img src="http://resources.changgou.com/img/_/bg-who1.png" />
+						<img src="/img/_/bg-who1.png" />
 						<div class="text">
 							<p class="title">店铺名称</p>
 							<ul class="remark">
@@ -144,69 +150,68 @@
 				</div>
 				<div class="stars">
 					<ul>
-						<li>
+						<li class="star">
 							商品符合度
-							<i class="sui-icon icon-tb-favorfill"></i>
-							<i class="sui-icon icon-tb-favorfill"></i>
-							<i class="sui-icon icon-tb-favorfill"></i>
-							<i class="sui-icon icon-tb-favorfill"></i>
-							<i class="sui-icon icon-tb-favorfill"></i>
+							<i class="sui-icon icon-tb-favor"></i>
+							<i class="sui-icon icon-tb-favor"></i>
+							<i class="sui-icon icon-tb-favor"></i>
+							<i class="sui-icon icon-tb-favor"></i>
+<i class="sui-icon icon-tb-favor"></i>
 						</li>
-						<li>
+						<li class="star">
 							店家服务态度
-							<i class="sui-icon icon-tb-favorfill"></i>
-							<i class="sui-icon icon-tb-favorfill"></i>
-							<i class="sui-icon icon-tb-favorfill"></i>
-							<i class="sui-icon icon-tb-favorfill"></i>
-							<i class="sui-icon icon-tb-favorfill"></i>
+							<i class="sui-icon icon-tb-favor"></i>
+							<i class="sui-icon icon-tb-favor"></i>
+							<i class="sui-icon icon-tb-favor"></i>
+							<i class="sui-icon icon-tb-favor"></i>
+<i class="sui-icon icon-tb-favor"></i>
 						</li>
-						<li>物流发货速度：
-							<i class="sui-icon icon-tb-favorfill"></i>
-							<i class="sui-icon icon-tb-favorfill"></i>
-							<i class="sui-icon icon-tb-favorfill"></i>
-							<i class="sui-icon icon-tb-favorfill"></i>
-							<i class="sui-icon icon-tb-favorfill"></i>
+						<li class="star">物流发货速度：
+							<i class="sui-icon icon-tb-favor"></i>
+							<i class="sui-icon icon-tb-favor"></i>
+							<i class="sui-icon icon-tb-favor"></i>
+<i class="sui-icon icon-tb-favor"></i>
+							<i class="sui-icon icon-tb-favor"></i>
 						</li>
-						<li>配送员服务
-							<i class="sui-icon icon-tb-favorfill"></i>
-							<i class="sui-icon icon-tb-favorfill"></i>
-							<i class="sui-icon icon-tb-favorfill"></i>
-							<i class="sui-icon icon-tb-favorfill"></i>
-							<i class="sui-icon icon-tb-favorfill"></i>
+						<li class="star">配送员服务
+							<i class="sui-icon icon-tb-favor"></i>
+							<i class="sui-icon icon-tb-favor"></i>
+							<i class="sui-icon icon-tb-favor"></i>
+							<i class="sui-icon icon-tb-favor"></i>
+							<i class="sui-icon icon-tb-favor"></i>
 							<li>
 					</ul>
 				</div>
 				<div style="clear:both"></div>
 			</div>
 			<div style="clear:both"></div>
-			<div class="goods">
-				<div class="good-item">
+			<div class="goods" >
+				<div class="good-item"  >
 					<div class="left">
 						<div class="img-intro">
-							<img src="http://resources.changgou.com/img/_/goods1.jpg" />
+							<img :src="comment.sku.image" />
 							<p>
-								<a href="#">维达(Vinda) 抽纸 柔滑3层100抽软抽*8包(新老包装随机发放)</a>
+								<a href="#">{{comment.sku.name}}</a>
 							</p>
-							<p>¥32.00</p>
-							<p class="gray">3层100抽*8包（柔滑）</p>
+							<p>¥{{comment.sku.price}}</p>
 						</div>
 					</div>
 					<div class="right">
 						<div class="summary-wrap clearfix">
 							<dl>
 								<dt>商品评分</dt>
-								<span>
-									<i class="sui-icon icon-tb-favorfill"></i>
-									<i class="sui-icon icon-tb-favorfill"></i>
-									<i class="sui-icon icon-tb-favorfill"></i>
-									<i class="sui-icon icon-tb-favorfill"></i>
-									<i class="sui-icon icon-tb-favorfill"></i>
+								<span class="star">
+									<i @click="star" class="sui-icon icon-tb-favor" value="1"></i>
+									<i  @click="star" class="sui-icon icon-tb-favor" value="2"></i>
+									<i @click="star" class="sui-icon icon-tb-favor" value="3"></i>
+									<i @click="star" class="sui-icon icon-tb-favor" value="4"></i>
+									<i @click="star" class="sui-icon icon-tb-favor" value="5"></i>
 								</span>
 							</dl>
 							<dl>
 								<dt>评价晒单</dt>
 								<div class="input">
-									<textarea id="inputComment" name="inputComment" placeholder="商品是否给力？快分享你的购物心得吧~" onkeyup="checkLen(this)"></textarea>
+									<textarea v-model="comment.content"  id="inputComment" name="inputComment" placeholder="商品是否给力？快分享你的购物心得吧~" onkeyup="checkLen(this)"></textarea>
 								</div>
 								<div class="bottom-tool">
 									<div class="wordnumber">还可以输入
@@ -237,7 +242,7 @@
 				</div>
 			</div>
 			<div class="submit">
-				<button class="sui-btn btn-danger btn-submit">提交</button>
+				<button @click="addComment" class="sui-btn btn-danger btn-submit">提交</button>
 				<input type="radio" name="type" value="1">
 				<span>匿名评价</span>
 			</div>
@@ -354,7 +359,7 @@
 						</div>
 						<div class="yui3-u-1-6">
 							<h4>帮助中心</h4>
-							<img src="http://resources.changgou.com/img/wx_cz.jpg">
+							<img src="./img/wx_cz.jpg">
 						</div>
 					</div>
 				</div>
@@ -396,18 +401,70 @@
 		</div>
 	</div>
 	<!--页面底部END-->
-	<script type="text/javascript" src="/js/plugins/jquery/jquery.min.js"></script>
-	<script type="text/javascript" src="/js/pages/updateimg.js"></script>
+	<script type="text/javascript" src="js/plugins/jquery/jquery.min.js"></script>
+	<script type="text/javascript" src="js/pages/updateimg.js"></script>
+	<script type="text/javascript" src="js/getParameter.js"></script>
+
 	<script>
+		var parameter = getParameter("comment_id");
+
+		var score ='';
+
 		function checkLen(obj) {
 			var maxChars = 500; //最多字符数 if (obj.value.length > maxChars) obj.value = obj.value.substring(0,maxChars);
 			var curr = maxChars - obj.value.length;
 			document.getElementById("count").innerHTML = curr.toString();
 		}
-		$(function() {
-			console.log($('#showui li').length)
-			
+		var vue = new  Vue({
+			el:"#app",
+			data:{
+				comment:{
+					score: '',
+					sku:{
+					}
+				}
+			},
+			created(){
+				axios.get("/api/comment/sku/"+parameter).then((res=>{
+					this.comment = res.data.data;
+				}))
+			},
+			methods:{
+				star(){
+					var stars = $('.star');
+					var Len = stars.length;
+					$('.star i').click(function() {
+						var starname = $(this).attr('class')
+						if (starname == 'sui-icon icon-tb-favor') {
+							$(this).prevAll('i').attr("class", "sui-icon icon-tb-favorfill")
+							$(this).attr("class", "sui-icon icon-tb-favorfill")
+							value = $(this).attr("value");
+							vue.comment.score = value;
+						} else {
+							$(this).nextAll('i').attr("class", "sui-icon icon-tb-favor")
+							$(this).prevAll('i').attr("class", "sui-icon icon-tb-favorfill")
+							$(this).attr("class", "sui-icon icon-tb-favorfill")
+						}
+					})
+				},
+				addComment(){
+					axios.put("/api/comment",this.comment).then((res=>{
+                           if(res.data.flag){
+							   this.$message({
+								   message: res.data.message,
+								   type: 'success'
+							   });
+							   var url = "/myOrder.html";
+							   setTimeout("location.href='" + url + "'", 1000);
+
+						   }else{
+							   this.$message.error("评价失败");
+						   }
+					}))
+				}
+			}
 		})
+
 	</script>
 </body>
 

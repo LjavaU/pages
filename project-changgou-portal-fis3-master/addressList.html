@@ -5,10 +5,18 @@
 		<meta charset="UTF-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE">
 		<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
-		<title>收货地址</title>	
-    <link rel="stylesheet" type="text/css" href="http://resources.changgou.com/css/all.css" />
-    <link rel="stylesheet" type="text/css" href="http://resources.changgou.com/css/pages-addressList.css" />
-</head>
+		<title>收货地址</title>
+		<link rel="icon" href="img/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="css/all.css" />
+    <link rel="stylesheet" type="text/css" href="css/pages-addressList.css" />
+		<script src="js/axios.js"></script>
+		<script src="js/vue.js"></script>
+		<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+		<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<!-- 引入样式 -->
+		<link rel="stylesheet" href="elementui/index.css">
+		<script src="elementui/index.js"></script>
+	</head>
 
 	<body>
 		<!-- 头部栏位 -->
@@ -34,7 +42,7 @@
 							<li class="f-item"><span>关注畅购</span></li>
 							<li class="f-item"><span><a href="cooperation.html" target="_blank">合作招商</a></span></li>
 							<li class="f-item"><span><a href="shoplogin.html" target="_blank">商家后台</a></span></li>				
-							<li class="f-item"><span>网站导航</li>
+							<li class="f-item"><span>网站导航</span></li>
 						</ul>
 					</div>
 					
@@ -89,7 +97,7 @@
 
 					</div>
 					<!--右侧主内容-->
-					<div class="yui3-u-5-6 body">
+					<div class="yui3-u-5-6 body" id="app">
 						<div class="addressList">
 							<div class="mt">
 								<span class="fl"><strong>我的收货地址</strong></span>
@@ -98,37 +106,30 @@
 
 						<div class="address-detail">
                           <div class="addbtn">
-                          	 <a data-toggle="modal" data-target=".edit" data-keyboard="false"   class="sui-btn btn-bordered btn-xlarge btn-info">新增收货地址</a>
+                          	 <button data-toggle="modal" @click="handleCreate" data-keyboard="false"   class="sui-btn btn-bordered btn-xlarge btn-info">新增收货地址</button>
                           	 <span class="topnum">您已创建4 个收货地址，最多可创建20个</span>
                           </div>
                           <div class="addresses">
-                          	<div class="address-item">
-                          		<div class="smt">王小丫&nbsp;&nbsp;
+                          	<div class="address-item" v-for="ad in addressList">
+                          		<div class="smt">{{ad.contact}}&nbsp;&nbsp;
                           			<a id="J_set" href="javascript:void(0)" data-toggle="tooltip" data-trigger="click" title="" data-original-title="更改收货人姓名&nbsp;&nbsp;<button class='sui-btn btn-small btn-danger'>保存</button><br><input type=&quot;text&quot;>">设置 </a>&nbsp;&nbsp;
-                          			<i class="sui-btn btn-warning">默认地址</i>
-                          			<a href="#" class="pull-right delete">删除</a>
+                          			<i class="sui-btn btn-warning" v-if="ad.isDefault==1" >默认地址</i>
+                          			<a href="#" @click="addrDelete(ad.id)" class="pull-right delete">删除</a>
                           		</div>
                           		
                           		<div class="smc">
                           			<div class="item">
                           				<span class="fl label">收货人：</span>
-                          				<div class="detail">王小丫</div>
+                          				<div class="detail">{{ad.contact}}</div>
                           				<div class="clearfix"></div>
                           			</div>
                           			
                           		</div>
-                          	    <div class="smc">
-                          			<div class="item">
-                          				<span class="fl label">所在地区：</span>
-                          				<div class="detail">北京海淀区</div>
-                          				<div class="clearfix"></div>
-                          			</div>
-                          			
-                          		</div>
+
                           	    <div class="smc">
                           			<div class="item">
                           				<span class="fl label">地址：</span>
-                          				<div class="detail">北京市海淀区东北旺西路8号中关村软件园9号楼国际软件大厦</div>
+                          				<div class="detail">{{ad.address}}</div>
                           				<div class="clearfix"></div>
                           			</div>
                           			
@@ -136,226 +137,197 @@
                           	    <div class="smc">
                           			<div class="item">
                           				<span class="fl label">手机：</span>
-                          				<div class="detail">15897895641</div>
+                          				<div class="detail">{{ad.phone}}</div>
                           				<div class="clearfix"></div>
                           			</div>
                           			
                           		</div>
-	                          	<div class="smc">
-	                          			<div class="item">
-	                          				<span class="fl label">固定电话：</span>
-	                          				<div class="detail">15897895641</div>
-	                          				<div class="clearfix"></div>
-	                          			</div>                          			
-	                          	</div> 
+
 	                          	<div class="pull-right operate">
-	                          		<a href="#" data-toggle="modal" data-target=".editinfo" data-keyboard="false" >使用一键购</a>
-	                          		<a href="#" data-toggle="modal" data-target=".edit" data-keyboard="false" >编辑</a>
+	                          		<a href="#" data-toggle="modal" @click="handleUpdate(ad.id)"  data-target=".editinfo" data-keyboard="false" >编辑</a>
 	                          	</div>
 	                          	<div class="clearfix"></div>
                           	</div>
-                          	<div class="address-item">
-                          		<div class="smt">周全&nbsp;&nbsp;
-                          			<a id="J_set" href="javascript:void(0)" data-toggle="tooltip" data-trigger="click" title="" data-original-title="更改收货人姓名&nbsp;&nbsp;<button class='sui-btn btn-small btn-danger'>保存</button><br><input type=&quot;text&quot;>">设置 </a>&nbsp;&nbsp;
-                          			<i class="sui-btn btn-warning">默认地址</i>
-                          			<a href="#" class="pull-right delete">删除</a>
-                          		</div>
-                          		
-                          		<div class="smc">
-                          			<div class="item">
-                          				<span class="fl label">收货人：</span>
-                          				<div class="detail">周全</div>
-                          				<div class="clearfix"></div>
-                          			</div>
-                          			
-                          		</div>
-                          	    <div class="smc">
-                          			<div class="item">
-                          				<span class="fl label">所在地区：</span>
-                          				<div class="detail">北京海淀区</div>
-                          				<div class="clearfix"></div>
-                          			</div>
-                          			
-                          		</div>
-                          	    <div class="smc">
-                          			<div class="item">
-                          				<span class="fl label">地址：</span>
-                          				<div class="detail">北京市海淀区东北旺西路8号中关村软件园9号楼国际软件大厦</div>
-                          				<div class="clearfix"></div>
-                          			</div>
-                          			
-                          		</div>
-                          	    <div class="smc">
-                          			<div class="item">
-                          				<span class="fl label">手机：</span>
-                          				<div class="detail">15897895641</div>
-                          				<div class="clearfix"></div>
-                          			</div>
-                          			
-                          		</div>
-	                          	<div class="smc">
-	                          			<div class="item">
-	                          				<span class="fl label">固定电话：</span>
-	                          				<div class="detail">15897895641</div>
-	                          				<div class="clearfix"></div>
-	                          			</div>                          			
-	                          	</div> 
-	                          	<div class="pull-right operate">
-	                          		<a href="#" data-toggle="modal" data-target=".editinfo" data-keyboard="false"  >使用一键购</a>
-	                          		<a href="#" data-toggle="modal" data-target=".edit" data-keyboard="false" >编辑</a>
-	                          	</div>
-	                          	<div class="clearfix"></div>
-                          	</div>
+
                           	
                           </div>
                           
                           <!--弹层内容-->
                           <!--添加地址-->
-                          <div  tabindex="-1" role="dialog" data-hasfoot="false" class="sui-modal hide fade edit">
-						  <div class="modal-dialog">
-						    <div class="modal-content">
-						      <div class="modal-header">
-						        <button type="button" data-dismiss="modal" aria-hidden="true" class="sui-close">×</button>
-						        <h4 id="myModalLabel" class="modal-title">添加收货地址</h4>
-						      </div>
-						      <div class="modal-body">
-						      	<form action="" class="sui-form form-horizontal">
-						      		 <div class="control-group">
-									    <label class="control-label">收货人：</label>
-									    <div class="controls">
-									      <input type="text" class="input-medium">
-									    </div>
-									  </div>
-									   <div class="control-group">
-									   	<label class="control-label">所在地区：</label>
-									   	<div class="controls">
-									   		<select id="province" data-default="江苏"></select>&nbsp;&nbsp;<select id="city" data-default="淮安"></select>&nbsp;&nbsp;<select id="district" data-default="涟水县"></select>
-									   	</div>									 
-									  </div>
-									   <div class="control-group">
-									    <label class="control-label">详细地址：</label>
-									    <div class="controls">
-									      <input type="text" class="input-large">
-									    </div>
-									  </div>
-									   <div class="control-group">
-									    <label class="control-label">联系电话：</label>
-									    <div class="controls">
-									      <input type="text" class="input-medium">
-									    </div>
-									  </div>
-									   <div class="control-group">
-									    <label class="control-label">邮箱：</label>
-									    <div class="controls">
-									      <input type="text" class="input-medium">
-									    </div>
-									  </div>
-									   <div class="control-group">
-									    <label class="control-label">地址别名：</label>
-									    <div class="controls">
-									      <input type="text" class="input-medium">
-									    </div>
-									    <div class="othername">
-									    	建议填写常用地址：<a href="#" class="sui-btn btn-default">家里</a>　<a href="#" class="sui-btn btn-default">父母家</a>　<a href="#" class="sui-btn btn-default">公司</a>
-									    </div>
-									  </div>
-									  
-						      	</form>
-						      	
-						      	
-						      </div>
-						      <div class="modal-footer">
-						        <button type="button" data-ok="modal" class="sui-btn btn-primary btn-large">确定</button>
-						        <button type="button" data-dismiss="modal" class="sui-btn btn-default btn-large">取消</button>
-						      </div>
-						    </div>
-						  </div>
-						</div>
-						 <!--确认地址-->
-						 <div  tabindex="-1" role="dialog" data-hasfoot="false" class="sui-modal hide fade editinfo">
-						  <div class="modal-dialog">
-						    <div class="modal-content">
-						      <div class="modal-header">
-						        <button type="button" data-dismiss="modal" aria-hidden="true" class="sui-close">×</button>
-						        <h4 id="myModalLabel" class="modal-title">设置支付和配送方式</h4>
-						      </div>
-						      <div class="modal-body">
-						      		<div class="address-item">
-                          		
-                          		
-                          			<h5>收货人信息</h5>
-                          		
-                          		<div class="smc">
-                          			<div class="item">
-                          				<span class="fl label">收货人：</span>
-                          				<div class="detail">周全</div>
-                          				<div class="clearfix"></div>
-                          			</div>
-                          			
-                          		</div>
-                          	    <div class="smc">
-                          			<div class="item">
-                          				<span class="fl label">所在地区：</span>
-                          				<div class="detail">北京海淀区</div>
-                          				<div class="clearfix"></div>
-                          			</div>
-                          			
-                          		</div>
-                          	    <div class="smc">
-                          			<div class="item">
-                          				<span class="fl label">地址：</span>
-                          				<div class="detail">北京市海淀区东北旺西路8号中关村软件园9号楼国际软件大厦</div>
-                          				<div class="clearfix"></div>
-                          			</div>
-                          			
-                          		</div>
-                          	    <div class="smc">
-                          			<div class="item">
-                          				<span class="fl label">手机：</span>
-                          				<div class="detail">15897895641</div>
-                          				<div class="clearfix"></div>
-                          			</div>
-                          			
-                          		</div>
-	                          	<div class="smc">
-	                          			<div class="item">
-	                          				<span class="fl label">固定电话：</span>
-	                          				<div class="detail">15897895641</div>
-	                          				<div class="clearfix"></div>
-	                          			</div>                          			
-	                          	</div> 
-	                        
-	                          	<div class="clearfix"></div>
-	                          	<h5>支付方式</h5>
-	                          	<label data-toggle="radio">
-							    <input type="radio" checked="checked" ><span>在线支付</span>
-							  </label>
-							  <label data-toggle="radio">
-							    <input type="radio" ><span>货到付款</span>
-							  </label>
-							  <label data-toggle="radio">
-							    <input type="radio" ><span>公司转账</span>
-							  </label>
-							   <label data-toggle="radio">
-							    <input type="radio"><span>邮局汇款</span>
-							  </label>
-	                          	<h5>配送方式</h5>
-	                          	<input type="radio" checked="checked"><span>品优购快递</span>
-							  </label>
-							  <label data-toggle="radio" >
-							    <input type="radio"><span>上门自提</span>
-							  </label>
-							  
-                          	</div>
-                          	
-						      </div>
-						      <div class="modal-footer">
-						        <button type="button" data-ok="modal" class="sui-btn btn-primary btn-large">确定</button>
-						        <button type="button" data-dismiss="modal" class="sui-btn btn-default btn-large">取消</button>
-						      </div>
-						    </div>
-						  </div>
-						</div>
+							<div class="add-form">
+								<el-dialog title="新增收货地址" :visible.sync="dialogFormVisible4">
+									<el-form ref="dataAddForm" :model="formData" :rules="rules" label-position="right" label-width="100px">
+										<el-row>
+											<el-col :span="12">
+												<el-form-item label="收货人:" prop="contact">
+													<el-input v-model="formData.contact"/>
+												</el-form-item>
+											</el-col>
+										</el-row>
+										<el-row>
+											<el-col :span="12">
+												<el-form-item label="所在地区:" prop="provinceid" >
+
+												<el-select  v-model="formData.provinceid" placeholder="请选择省" @change="selectCountry">
+													<el-option
+															v-for="item in provinceList"
+															:key="item.provinceid"
+															:label="item.province"
+															:value="item.provinceid">
+													</el-option>
+												</el-select>
+
+												</el-form-item>
+												<el-form-item  prop="cityid" >
+												<el-select  v-model="formData.cityid" placeholder="请选择市" @change="selectCity">
+													<el-option
+															v-for="item in cityList"
+															:key="item.cityid"
+															:label="item.city"
+															:value="item.cityid">
+													</el-option>
+												</el-select>
+												</el-form-item>
+												<el-form-item  prop="areaid" >
+												<el-select  v-model="formData.areaid" placeholder="请选择区" >
+													<el-option
+															v-for="item in areaList"
+															:key="item.areaid"
+															:label="item.area"
+															:value="item.areaid"
+													         >
+													</el-option>
+												</el-select>
+												</el-form-item>
+											</el-col>
+										</el-row>
+										<el-row>
+											<el-col :span="12">
+												<el-form-item label="详细地址:" prop="address">
+													<el-input v-model="formData.address"/>
+												</el-form-item>
+											</el-col>
+										</el-row>
+										<el-row>
+											<el-col :span="12">
+												<el-form-item label="地址是否默认:" prop="isDefault">
+															<el-select v-model="formData.isDefault">
+																<el-option label="是" value="1"></el-option>
+																<el-option label="否" value="0"></el-option>
+															</el-select>
+												</el-form-item>
+											</el-col>
+										</el-row>
+										<el-row>
+											<el-col :span="12">
+												<el-form-item label="联系电话:" prop="phone" >
+													<el-input v-model="formData.phone"/>
+												</el-form-item>
+											</el-col>
+										</el-row>
+										<el-row>
+											<el-col :span="12">
+												<el-form-item label="地址别名:" >
+													<el-input  v-model="formData.alias" placeholder="列如:家里 公司"/>
+												</el-form-item>
+											</el-col>
+										</el-row>
+
+									</el-form>
+									<div slot="footer" class="dialog-footer">
+										<el-button @click="dialogFormVisible4 = false">取消</el-button>
+										<el-button type="primary" @click="add()">添加</el-button>
+									</div>
+								</el-dialog>
+							</div>
+
+							<!--编辑地址-->
+							<div class="add-form">
+								<el-dialog title="修改收货地址" :visible.sync="dialogFormVisible4Edit">
+									<el-form ref="dataEditForm" :model="formData" :rules="rules" label-position="right" label-width="100px">
+										<el-row>
+											<el-col :span="12">
+												<el-form-item label="收货人:" prop="contact">
+													<el-input v-model="formData.contact"/>
+												</el-form-item>
+											</el-col>
+										</el-row>
+										<el-row>
+											<el-col :span="12">
+												<el-form-item label="所在地区:" prop="provinceid" >
+
+													<el-select  v-model="formData.provinceid" placeholder="请选择省" @change="selectCountry">
+														<el-option
+																v-for="item in provinceList"
+																:key="item.provinceid"
+																:label="item.province"
+																:value="item.provinceid">
+														</el-option>
+													</el-select>
+
+												</el-form-item>
+												<el-form-item  prop="cityid" >
+													<el-select  v-model="formData.cityid" placeholder="请选择市" @change="selectCity">
+														<el-option
+																v-for="item in cityList"
+																:key="item.cityid"
+																:label="item.city"
+																:value="item.cityid">
+														</el-option>
+													</el-select>
+												</el-form-item>
+												<el-form-item  prop="areaid" >
+													<el-select  v-model="formData.areaid" placeholder="请选择区" >
+														<el-option
+																v-for="item in areaList"
+																:key="item.areaid"
+																:label="item.area"
+																:value="item.areaid"
+														>
+														</el-option>
+													</el-select>
+												</el-form-item>
+											</el-col>
+										</el-row>
+										<el-row>
+											<el-col :span="12">
+												<el-form-item label="详细地址:" prop="address">
+													<el-input v-model="formData.address"/>
+												</el-form-item>
+											</el-col>
+										</el-row>
+										<el-row>
+											<el-col :span="12">
+												<el-form-item label="地址是否默认:" prop="isDefault">
+													<el-select v-model="formData.isDefault">
+														<el-option label="是" value="1"></el-option>
+														<el-option label="否" value="0"></el-option>
+													</el-select>
+												</el-form-item>
+											</el-col>
+										</el-row>
+										<el-row>
+											<el-col :span="12">
+												<el-form-item label="联系电话:" prop="phone" >
+													<el-input v-model="formData.phone"/>
+												</el-form-item>
+											</el-col>
+										</el-row>
+										<el-row>
+											<el-col :span="12">
+												<el-form-item label="地址别名:" >
+													<el-input  v-model="formData.alias" placeholder="列如:家里 公司"/>
+												</el-form-item>
+											</el-col>
+										</el-row>
+
+									</el-form>
+									<div slot="footer" class="dialog-footer">
+										<el-button @click="dialogFormVisible4Edit = false">取消</el-button>
+										<el-button type="primary" @click="edit()">修改</el-button>
+									</div>
+								</el-dialog>
+							</div>
                           
 						</div>
 
@@ -474,7 +446,7 @@
 					</div>
 					<div class="yui3-u-1-6">
 						<h4>帮助中心</h4>
-						<img src="http://resources.changgou.com/img/wx_cz.jpg">
+						<img src="./img/wx_cz.jpg">
 					</div>
 				</div>
 			</div>
@@ -503,3 +475,153 @@
 </body>
 
 </html>
+<script  type="application/javascript">
+	  new Vue({
+		  el: "#app",
+		  data: {
+			  addressList: [],
+			  provinceList: [],
+			  cityList: [],
+			  areaList: [],
+			  address: {},
+			  editAddress: {},
+			  formData:{},
+			  dialogFormVisible4: false,
+			  dialogFormVisible4Edit: false,
+			  rules: {//校验规则
+				  contact: [{ required: true, message: '收货人为必填项', trigger: 'blur' }],
+				  phone: [{ required: true, message: '联系电话必填项', trigger: 'blur' }],
+				  address: [{ required: true, message: '详细地址为必填项', trigger: 'blur' }],
+				  isDefault: [{ required: true, message: '是否默认地址为必填项', trigger: 'change' }],
+				  provinceid: [{ required: true, message: '地址为必填项', trigger: 'change' }],
+				  cityid: [{ required: true, message: '地址为必填项', trigger: 'change' }],
+				  areaid: [{ required: true, message: '地址为必填项', trigger: 'change' }],
+			  },
+			  value:''
+		  },
+		  created() {
+			  axios.get("/api/address/user/list").then((res => {
+				  this.addressList = res.data.data;
+			  })),
+					  axios.get("/api/provinces").then((res => {
+						  this.provinceList = res.data;
+					  }))
+		  },
+		  methods: {
+			  // 弹出添加窗口
+			  handleCreate() {
+				  this.formData = {};
+				  this.areaList = '';
+				  this.cityList = '';
+				  this.dialogFormVisible4 = true;
+
+			  },
+			  // 弹出编辑窗口
+			  handleUpdate(id) {
+				  axios.get("/api/address/" + id).then((res => {
+					  if (res.data.flag) {
+						  this.dialogFormVisible4Edit = true;
+						  this.formData = res.data.data;
+						  axios.get("/api/cities/" + this.formData.provinceid).then((res => {
+							  this.cityList = res.data;
+						  }))
+						  axios.get("/api/areas/" + this.formData.cityid).then((res => {
+							  this.areaList = res.data;
+						  }))
+					  }
+				  }))
+			  },
+			  selectCountry(event) {
+				  this.formData.cityid = '';
+				  this.areaList = null;
+				  var value = event;
+				  axios.get("/api/cities/" + value).then((res => {
+					  this.cityList = res.data;
+				  }))
+
+
+			  },
+			  findAll() {
+				  axios.get("/api/address/user/list").then((res => {
+					  this.addressList = res.data.data;
+
+				  }))
+			  },
+			  selectCity(event) {
+
+				  this.value = event;
+				  axios.get("/api/areas/" + this.value).then((res => {
+					  this.areaList = res.data;
+					  this.$forceUpdate();
+				  }))
+
+
+			  },
+
+			  add() {
+
+				  this.$refs['dataAddForm'].validate((valid) => {
+					  if (valid) {
+						  axios.post("/api/address", this.formData).then((res => {
+							  this.dialogFormVisible4 = false;
+							  if (res.data.flag) {
+								  this.$message({
+									  message: res.data.message,
+									  type: 'success'
+								  });
+								  this.findAll();
+							  } else {
+								  this.$message.error("添加失败");
+							  }
+						  }))
+					  } else {
+						  this.$message.error("表单数据校验失败");
+						  return false;
+					  }
+				  })
+
+			  },
+			  edit() {
+				  this.$refs['dataEditForm'].validate((valid) => {
+					  if (valid) {
+						  axios.post("/api/address/", this.formData).then((res => {
+							  if (res.data.flag) {
+								  this.dialogFormVisible4Edit = false;
+								  this.$message({
+									  message: '修改成功',
+									  type: 'success'
+								  });
+							  }
+						  })).finally(() => {
+							  this.findAll();
+						  })
+					  } else {
+						  this.$message.error("表单数据校验失败");
+						  return false;
+					  }
+				  })
+			  },
+			  addrDelete(id) {
+				  this.$confirm("确认删除吗?", "提示", {type: 'warning'}).then(() => {
+					  axios.delete("/api/address/" + id).then(res => {
+						  if (!res.data.flag) {
+							  this.$message.error("删除失败");
+						  } else {
+							  this.$message({
+								  message: res.data.message,
+								  type: 'success'
+							  });
+							  this.findAll();
+						  }
+					  })
+				  }).catch(() => {
+					  this.$message({
+						  type: 'info',
+						  message: '已取消'
+					  })
+
+				  })
+			  }
+		  }
+	  })
+</script>

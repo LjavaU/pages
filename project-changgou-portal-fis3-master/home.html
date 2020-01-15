@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
 
 <head>
 	<meta charset="UTF-8">
@@ -7,9 +7,43 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
 	<title>我的账户</title>
 	<link rel="icon" href="/img/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="css/all.css" />
+    <link rel="stylesheet" type="text/css" href="css/pages-home.css" />
+	<script src="js/vue.js"></script>
+	<script src="js/axios.js"></script>
+	<!-- 引入样式 -->
+	<link rel="stylesheet" href="elementui/index.css">
+	<script src="elementui/index.js"></script>
+	<script src="js/mobile.js"></script>
+	<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+	<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script src="js/common.js"></script>
+	<style>
+		.avatar-uploader .el-upload {
+			border: 1px dashed #d9d9d9;
+			border-radius: 6px;
+			cursor: pointer;
+			position: relative;
+			overflow: hidden;
+		}
+		.avatar-uploader .el-upload:hover {
+			border-color: #409EFF;
+		}
+		.avatar-uploader-icon {
+			font-size: 28px;
+			color: #8c939d;
+			width: 178px;
+			height: 178px;
+			line-height: 178px;
+			text-align: center;
+		}
+		.avatar {
+			width: 178px;
+			height: 178px;
+			display: block;
+		}
+	</style>
 
-    <link rel="stylesheet" type="text/css" href="http://resources.changgou.com/css/all.css" />
-    <link rel="stylesheet" type="text/css" href="http://resources.changgou.com/css/pages-home.css" />
 </head>
 
 <body>
@@ -36,7 +70,7 @@
 							<li class="f-item"><span>关注青橙</span></li>
 							<li class="f-item"><span><a href="cooperation.html" target="_blank">合作招商</a></span></li>
 							<li class="f-item"><span><a href="shoplogin.html" target="_blank">商家后台</a></span></li>				
-							<li class="f-item"><span>网站导航</li>
+							<li class="f-item"><span>网站导航</span></li>
 						</ul>
 					</div>
 					
@@ -72,13 +106,13 @@
 
 	<!--header-->
 	<div id="account">
-		<div class="py-container">
+		<div class="py-container" id="app">
 			<div class="yui3-g home">
 				<!--左侧列表-->
 				<div class="yui3-u-1-6 list">
 					<dl>
 						<dt><i>·</i> 订单中心</dt>
-						<dd><a href="myOrder.html"  target="_blank">我的订单</a></dd>
+						<dd><a href="/myOrder.html"  target="_blank">我的订单</a></dd>
 						<dd>团购订单</dd>
 						<dd>本地生活订单 </dd>
 						<dd>我的预售</dd>
@@ -117,8 +151,9 @@
 					</dl>
 					<dl>
 						<dt><i>·</i> 设置</dt>
-						<dd>个人信息 </dd>
+						<dd><a href="#person" @click="handleCreate()">个人信息</a> </dd>
 						<dd><a href="addressList.html" target="_blank">收货地址</a> </dd>
+						<dd><a href="#modify_password"  @click="modifypassword()">修改密码</a> </dd>
 					</dl>
 				</div>
 				<!--右侧主内容-->
@@ -126,7 +161,7 @@
 					<div class="aboutme yui3-g">
 						<div class="yui3-u-1-4 set info">
 							<div class="u-pic">
-								<img src="http://resources.changgou.com/img/photo.png" alt="用户头像" />
+								<img src="img/photo.png" alt="用户头像" />
 							</div>
 							<div class="u-info">
 								<div class="u-name">小蜻蜓</div>
@@ -178,7 +213,7 @@
 							</div>
 						</div>
 						<div class="yui3-u-5-24 ads">
-							<img src="http://resources.changgou.com/img/account.png" />
+							<img src="img/account.png" />
 						</div>
 					</div>
 					<div class="order">
@@ -199,13 +234,13 @@
 								<div id="myCarousel" data-ride="carousel" data-interval="4000" class="sui-carousel slide">
 									<div class="carousel-inner">
 										<div class="active item">
-											<img src="http://resources.changgou.com/img/quan.png" />
+											<img src="img/quan.png" />
 										</div>
 										<div class="item">
-											<img src="http://resources.changgou.com/img/quan.png" />
+											<img src="img/quan.png" />
 										</div>
 										<div class="item">
-											<img src="http://resources.changgou.com/img/quan.png" />
+											<img src="img/quan.png" />
 										</div>
 									</div>
 									<a href="#myCarousel" data-slide="prev" class="carousel-control left">‹</a>
@@ -216,7 +251,7 @@
 						<div class="yui3-u-1-3 change">
 							<div class="title"><span><strong>积分兑换</strong></span></div>
 							<div class="jifen">
-								<div class="fl"><img src="http://resources.changgou.com/img/duihuan.png" /></div>
+								<div class="fl"><img src="img/duihuan.png" /></div>
 								<div class="fr">
 									<span>FancyFeast珍致 猫头鹰 精选金枪鱼肉配人工蟹肉条</span><br />
 									<span class="fen"><i>1000</i>积分</span>
@@ -264,183 +299,217 @@
 							</div>
 						</div>
 					</div>
-					<div class="ever">
+					<div class="ever" >
 						<ul class="sui-nav nav-tabs">
 							<li class="active">
-								<a href="#index" data-toggle="tab">商品收藏</a>
+								<a href="#collect" @click="userCollect" data-toggle="tab">商品收藏</a>
 							</li>
-							<li>
-								<a href="#profile" data-toggle="tab">购物踪迹</a>
+							<li >
+								<a href="#profile" @click="footPrint" data-toggle="tab">购物踪迹</a>
 							</li>
 						</ul>
 						<div class="clearfix"></div>
-						<div class="tab-content">
-							<div id="index" class="tab-pane active">
+						<div class="tab-content" >
+							<div id="collect" class="tab-pane active">
 								<div class="like-list">
 									<ul class="yui3-g">
-										<li class="yui3-u-1-4">
+										<li class="yui3-u-1-4" v-for="c in collects">
 											<div class="list-wrap">
 												<div class="p-img">
-													<img src="http://resources.changgou.com/img/_/itemlike01.png" />
+													<a :href="'/api/items/'+c.spuId"><img :src="c.image" /></a>
 												</div>
 												<div class="attr">
-													<em>DELL戴尔Ins 15MR-7528SS 15英寸 银色 笔记本</em>
+													<em>{{c.name}}</em>
 												</div>
 												<div class="price">
 													<strong>
 											<em>¥</em>
-											<i>3699.00</i>
+											<i>{{c.price}}</i>
 										</strong>
 												</div>
 												<div class="commit">
-													<i class="command">已有6人评价</i>
+													<i class="command">已有{{c.commentNum}}人评价</i>
 												</div>
 											</div>
 										</li>
-										<li class="yui3-u-1-4">
-											<div class="list-wrap">
-												<div class="p-img">
-													<img src="http://resources.changgou.com/img/_/itemlike02.png" />
-												</div>
-												<div class="attr">
-													<em>Apple苹果iPhone 6s/6s Plus 16G 64G 128G</em>
-												</div>
-												<div class="price">
-													<strong>
-											<em>¥</em>
-											<i>4388.00</i>
-										</strong>
-												</div>
-												<div class="commit">
-													<i class="command">已有700人评价</i>
-												</div>
-											</div>
-										</li>
-										<li class="yui3-u-1-4">
-											<div class="list-wrap">
-												<div class="p-img">
-													<img src="http://resources.changgou.com/img/_/itemlike03.png" />
-												</div>
-												<div class="attr">
-													<em>DELL戴尔Ins 15MR-7528SS 15英寸 银色 笔记本</em>
-												</div>
-												<div class="price">
-													<strong>
-											<em>¥</em>
-											<i>4088.00</i>
-										</strong>
-												</div>
-												<div class="commit">
-													<i class="command">已有700人评价</i>
-												</div>
-											</div>
-										</li>
-										<li class="yui3-u-1-4">
-											<div class="list-wrap">
-												<div class="p-img">
-													<img src="http://resources.changgou.com/img/_/itemlike04.png" />
-												</div>
-												<div class="attr">
-													<em>DELL戴尔Ins 15MR-7528SS 15英寸 银色 笔记本</em>
-												</div>
-												<div class="price">
-													<strong>
-											<em>¥</em>
-											<i>4088.00</i>
-										</strong>
-												</div>
-												<div class="commit">
-													<i class="command">已有700人评价</i>
-												</div>
-											</div>
-										</li>
-										<li class="yui3-u-1-4">
-											<div class="list-wrap">
-												<div class="p-img">
-													<img src="http://resources.changgou.com/img/_/itemlike01.png" />
-												</div>
-												<div class="attr">
-													<em>DELL戴尔Ins 15MR-7528SS 15英寸 银色 笔记本</em>
-												</div>
-												<div class="price">
-													<strong>
-											<em>¥</em>
-											<i>3699.00</i>
-										</strong>
-												</div>
-												<div class="commit">
-													<i class="command">已有6人评价</i>
-												</div>
-											</div>
-										</li>
-										<li class="yui3-u-1-4">
-											<div class="list-wrap">
-												<div class="p-img">
-													<img src="http://resources.changgou.com/img/_/itemlike02.png" />
-												</div>
-												<div class="attr">
-													<em>Apple苹果iPhone 6s/6s Plus 16G 64G 128G</em>
-												</div>
-												<div class="price">
-													<strong>
-											<em>¥</em>
-											<i>4388.00</i>
-										</strong>
-												</div>
-												<div class="commit">
-													<i class="command">已有700人评价</i>
-												</div>
-											</div>
-										</li>
-										<li class="yui3-u-1-4">
-											<div class="list-wrap">
-												<div class="p-img">
-													<img src="http://resources.changgou.com/img/_/itemlike03.png" />
-												</div>
-												<div class="attr">
-													<em>DELL戴尔Ins 15MR-7528SS 15英寸 银色 笔记本</em>
-												</div>
-												<div class="price">
-													<strong>
-											<em>¥</em>
-											<i>4088.00</i>
-										</strong>
-												</div>
-												<div class="commit">
-													<i class="command">已有700人评价</i>
-												</div>
-											</div>
-										</li>
-										<li class="yui3-u-1-4">
-											<div class="list-wrap">
-												<div class="p-img">
-													<img src="http://resources.changgou.com/img/_/itemlike04.png" />
-												</div>
-												<div class="attr">
-													<em>DELL戴尔Ins 15MR-7528SS 15英寸 银色 笔记本</em>
-												</div>
-												<div class="price">
-													<strong>
-											<em>¥</em>
-											<i>4088.00</i>
-										</strong>
-												</div>
-												<div class="commit">
-													<i class="command">已有700人评价</i>
-												</div>
-											</div>
-										</li>
+
 									</ul>
+								</div>
+								<div class="pagination-container">
+									<el-pagination
+											class="pagiantion"
+											@current-change="handleCurrentChange"
+											:current-page="pagination.currentPage"
+											:page-size="pagination.pageSize"
+											layout="total, prev, pager, next, jumper"
+											:total="pagination.total">
+									</el-pagination>
 								</div>
 							</div>
 							<div id="profile" class="tab-pane">
-								<p>特惠选购</p>
+								<div class="like-list">
+									<ul class="yui3-g">
+										<li class="yui3-u-1-4" v-for="p in profiles">
+											<div class="list-wrap">
+												<div class="p-img">
+													<img :src="p.image" />
+												</div>
+												<div class="attr">
+													<em>{{p.name}}</em>
+												</div>
+												<div class="price">
+													<strong>
+														<em>¥</em>
+														<i>{{p.price}}</i>
+													</strong>
+												</div>
+												<div class="commit">
+													<i class="command">已有{{p.commentNum}}人评价</i>
+												</div>
+											</div>
+										</li>
+
+									</ul>
+								</div>
+								<div class="pagination-container">
+									<el-pagination
+											class="pagiantion"
+											@current-change="handleCurrentChange2"
+											:current-page="pagination.currentPage"
+											:page-size="pagination.pageSize"
+											layout="total, prev, pager, next, jumper"
+											:total="pagination.total">
+									</el-pagination>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
+			<!-- 个人信息编辑标签弹层 -->
+			<div class="add-form">
+				<el-dialog title="修改/查看个人信息" :visible.sync="dialogFormVisible4Edit">
+					<el-form ref="dataEditForm" :model="formData" :rules="rules" label-position="right" label-width="100px">
+						<el-row>
+							<el-col :span="12">
+								<el-form-item label="真实姓名:" prop="username">
+									<el-input v-model="formData.username"/>
+								</el-form-item>
+							</el-col>
+						</el-row>
+						<el-row>
+							<el-col :span="12">
+								<el-form-item label="昵称:" prop="nickName">
+									<el-input @blur="findNickName"  v-model="formData.nickName"/>
+								</el-form-item>
+							</el-col>
+						</el-row>
+						<el-row>
+							<el-col :span="12">
+								<el-form-item label="性别" prop="sex">
+									<el-select v-model="formData.sex">
+										<el-option label="男" value="1"></el-option>
+										<el-option label="女" value="2"></el-option>
+									</el-select>
+								</el-form-item>
+							</el-col>
+						</el-row>
+						<el-row>
+							<el-col :span="12">
+								<el-form-item label="QQ:" >
+									<el-input v-model="formData.qq"/>
+								</el-form-item>
+							</el-col>
+						</el-row>
+						<el-row>
+							<el-col :span="12">
+								<el-form-item label="出生年月:" prop="birthday">
+									<el-date-picker
+											v-model="formData.birthday"
+											type="datetime"
+											placeholder="选择出生日期"
+									        format="yyyy-MM-dd">
+									</el-date-picker>
+								</el-form-item>
+							</el-col>
+						</el-row>
+						<el-row>
+							<el-col :span="24">
+								<el-form-item label="上传/修改图像">
+									<el-upload
+											class="avatar-uploader"
+											action="/upload"
+											:auto-upload="autoUpload"
+											name="file"
+											:show-file-list="false"
+											:on-success="handleAvatarSuccess"
+											:before-upload="beforeAvatarUpload">
+										<img v-if="imageUrl" :src="imageUrl" class="avatar">
+										<i v-else class="el-icon-plus avatar-uploader-icon"></i>
+									</el-upload>
+								</el-form-item>
+							</el-col>
+						</el-row>
+
+					</el-form>
+					<div slot="footer" class="dialog-footer">
+						<el-button @click="dialogFormVisible4Edit = false">取消</el-button>
+						<el-button type="primary" @click="handleEdit()">修改</el-button>
+					</div>
+				</el-dialog>
+			</div>
+
+			<!-- 修改密码标签弹层 -->
+			<div class="add-form">
+				<el-dialog title="重置密码" :visible.sync="dialogFormVisible4Editpwd">
+					<el-form ref="pwdEditForm" :model="pwdformData" :rules="pwdrules" label-position="right" label-width="100px">
+						<el-row>
+							<el-col :span="12">
+								<el-form-item label="用户名:" >
+									<el-input v-model="pwdformData.username" :disabled="true"/>
+								</el-form-item>
+							</el-col>
+						</el-row>
+						<el-row>
+							<el-col :span="12">
+								<el-form-item label="手机号:" >
+									<el-input v-model="pwdformData.phone" :disabled="true"/>
+								</el-form-item>
+								<input id="validateCodeButton" @click="sendValidateCode()"   type="button" style="font-size: 12px" value="获取验证码"><br>
+							</el-col>
+						</el-row>
+						<el-row>
+							<el-col :span="12">
+								<el-form-item label="验证码:"  prop="code">
+									<el-input v-model="pwdformData.code" />
+								</el-form-item>
+							</el-col>
+						</el-row>
+						<el-row>
+							<el-col :span="12">
+								<el-form-item label="请输入重置密码:" prop="password" >
+									<el-input type="password" v-model="pwdformData.password" />
+								</el-form-item>
+							</el-col>
+						</el-row>
+						<el-row>
+							<el-col :span="12">
+								<el-form-item label="请确认密码:" prop="checkpwd" >
+									<el-input type="password" v-model="pwdformData.checkpwd" />
+								</el-form-item>
+							</el-col>
+						</el-row>
+
+
+					</el-form>
+					<div slot="footer" class="dialog-footer">
+						<el-button @click="dialogFormVisible4Editpwd = false">取消</el-button>
+						<el-button type="primary" @click="handlePwdEdit()">修改</el-button>
+					</div>
+				</el-dialog>
+			</div>
 		</div>
+
 	</div>
 	<!-- 底部栏位 -->
 	<!--页面底部-->
@@ -551,7 +620,7 @@
 					</div>
 					<div class="yui3-u-1-6">
 						<h4>帮助中心</h4>
-						<img src="http://resources.changgou.com/img/wx_cz.jpg">
+						<img src="img/wx_cz.jpg">
 					</div>
 				</div>
 			</div>
@@ -574,9 +643,265 @@
 		</div>
 	</div>
 </div>
+
+
 <!--页面底部END-->
-
-
 </body>
-
 </html>
+<script type="text/javascript">
+	var cookie1 = cookie.getCookie("Authorization");
+	var app=new Vue({
+		el:"#app",
+		data:{
+			collects:[],
+			profiles:[],
+			pagination: {//分页相关模型数据
+				currentPage: 1,//当前页码
+				pageSize:4,//每页显示的记录数
+				total:0,//总记录数
+				queryString:null//查询条件
+			},
+			autoUpload:true,//自动上传
+			imageUrl:null,//模型数据，用于上传图片完成后图片预览
+			active1:'active',
+			active2:{},
+			dialogFormVisible4Edit:false,
+			dialogFormVisible4Editpwd:false,
+			pwdformData:{
+                 code:''
+			},
+			formData: {
+				birthday: ''
+			},//表单数据
+
+			rules: {//校验规则
+				username: [{ required: true, message: '真实姓名为必填项', trigger: 'blur' }],
+				nickName: [{ required: true, message: '昵称为必填项', trigger: 'blur' }],
+				sex: [{ required: true, message: '性别为必填项', trigger: 'blur' }],
+				birthday: [{ required: true, message: '出生日期为必填项', trigger: 'blur' }],
+			},
+			pwdrules:{
+				code: [{ required: true, message: '请输入验证码', trigger: 'blur' }],
+				password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
+				checkpwd: [{ required: true, message: '密码不能为空', trigger: 'blur' }],
+			},
+			flag: true
+		},
+		created(){
+			if(cookie1==null || cookie1==''){
+				window.location.href="http://192.168.45.49/login.html?from=http://192.168.45.49/home.html";
+			}else {
+				this.pagination.currentPage = 1;
+				var params = {
+					currentPage: 1,
+					pageSize: this.pagination.pageSize,
+					queryString: this.pagination.queryString
+				};
+				axios.get("/api/user/collect/" + params.currentPage + "/" + params.pageSize).then((response) => {
+					this.collects = response.data.data.list;
+					this.pagination.total = response.data.data.total;
+
+				})
+			}
+		},
+		methods: {
+			handleAvatarSuccess(res, file) {
+				this.imageUrl = res.data;
+				this.$message({
+					message: res.message,
+					type: res.flag ? 'success' : 'error'
+				});
+				//设置模型数据（图片名称），后续提交ajax请求时会提交到后台最终保存到数据库
+				this.formData.headPic = res.data;
+			},
+			beforeAvatarUpload(file) {
+				const isJPG = file.type === 'image/jpeg';
+				const isLt2M = file.size / 1024 / 1024 < 2;
+
+				if (!isJPG) {
+					this.$message.error('上传头像图片只能是 JPG 格式!');
+				}
+				if (!isLt2M) {
+					this.$message.error('上传头像图片大小不能超过 2MB!');
+				}
+				return isJPG && isLt2M;
+			},
+			// 用户收藏
+			userCollect() {
+				axios.get("/api/user/collect/1/4").then((res => {
+					this.collects = res.data.data.list;
+					this.pagination.currentPage = 1;
+					this.pagination.total = res.data.data.total;
+
+				}))
+			},
+			// 购物足迹
+			footPrint() {
+
+				axios.get("/api/user/footPrint/1/4").then((res => {
+					this.profiles = res.data.data.list;
+					this.pagination.currentPage = 1;
+					this.pagination.total = res.data.data.total;
+				}))
+			},
+			//分页查询
+			findPage() {
+				this.pagination.currentPage = 1;
+				var params = {
+					currentPage: 1,
+					pageSize: this.pagination.pageSize,
+					queryString: this.pagination.queryString
+				};
+				axios.get("/api/user/collect/" + params.currentPage + "/" + params.pageSize).then((response) => {
+					this.collects = response.data.data.list;
+					this.pagination.total = response.data.data.total;
+
+				})
+			},
+			//切换页码
+			handleCurrentChange(currentPage) {
+				this.pagination.currentPage = currentPage;
+				var params = {
+					currentPage: currentPage,
+					pageSize: this.pagination.pageSize,
+					queryString: this.pagination.queryString
+				};
+				axios.get("/api/user/collect/+" + params.currentPage + "/" + params.pageSize).then((response) => {
+					this.collects = response.data.data.list;
+					this.pagination.total = response.data.data.total;
+
+				})
+
+
+			},//切换页码2
+			handleCurrentChange2(currentPage) {
+				this.pagination.currentPage = currentPage;
+				var params = {
+					currentPage: currentPage,
+					pageSize: this.pagination.pageSize,
+					queryString: this.pagination.queryString
+				};
+				axios.get("/api/user/footPrint/+" + params.currentPage + "/" + params.pageSize).then((response) => {
+					this.profiles = response.data.data.list;
+					this.pagination.total = response.data.data.total;
+
+				})
+
+
+			},
+			// 弹出添加窗口
+			handleCreate() {
+				this.formData = {};
+				this.flag = true;
+				axios.get("/api/user").then((response) => {
+					if (response.data.flag) {
+						this.dialogFormVisible4Edit = true;
+						this.formData = response.data.data;
+						this.imageUrl = this.formData.headPic;
+
+					}
+
+				})
+
+			},
+			// 用户信息编辑
+			handleEdit() {
+				this.$refs['dataEditForm'].validate((valid) => {
+					if (valid) {
+
+						if (this.flag) {
+							axios.post("/api/user", this.formData).then((response) => {
+								this.dialogFormVisible4Edit = false;
+								if (response.data.flag) {
+									this.$message({
+										message: response.data.message,
+										type: 'success'
+									});
+								} else {
+									this.$message.error("更新失败");
+								}
+
+							})
+						} else {
+							this.$message.error("昵称重复");
+						}
+					}
+				})
+			},
+			findNickName() {
+				axios.get("/api/user/nickName/" + this.formData.nickName).then((response) => {
+					if (!response.data.flag) {
+						this.$message.error("昵称重复");
+						this.flag = false;
+					} else {
+						this.flag = true;
+					}
+
+				})
+			},
+			// 回显数据
+			modifypassword() {
+				axios.get("/api/user/").then((response) => {
+					if (response.data.flag) {
+						this.dialogFormVisible4Editpwd = true;
+						this.pwdformData = response.data.data;
+						this.pwdformData.password = '';
+					} else {
+						this.$message.error('网络错误');
+					}
+				})
+			},
+			// 修改密码
+			handlePwdEdit(){
+				this.$refs['pwdEditForm'].validate((valid) => {
+					if (valid) {
+						if (this.pwdformData.password != this.pwdformData.checkpwd) {
+							this.$message.error("俩次输入密码不一致");
+						} else if (this.code != this.pwdformData.code) {
+							this.$message.error("验证码错误");
+						} else {
+							axios.put("/api/user/resetlogin", this.pwdformData).then((response) => {
+								this.dialogFormVisible4Editpwd = false;
+								if (response.data.flag) {
+									this.code = '';
+									this.$message({
+										message: response.data.message,
+										type: 'success'
+									});
+									var url = "http://192.168.45.49/login.html?from="+response.data.data;
+									setTimeout("location.href='" + url + "'", 1000);
+								} else {
+									this.$message.error(response.data.message);
+								}
+
+							})
+						}
+					}
+				})
+			},
+			//发送验证码
+			sendValidateCode() {
+				validateCodeButton = $("#validateCodeButton")[0];
+				clock = window.setInterval(doLoop, 1000); //一秒执行一次
+				this.verificationCode();
+			},
+			// 生成验证码
+			verificationCode() {
+				var code = "";
+
+				for (var i = 0; i < 6; i++) {
+
+					var radom = Math.floor(Math.random() * 10);
+
+					code += radom;
+
+				}
+				this.code = code;
+				alert("验证码是" + code);
+			},
+		},
+
+
+
+	})
+</script>

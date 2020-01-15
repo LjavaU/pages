@@ -6,12 +6,14 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE">
 		<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
 		<title>微信支付页</title>
-        <link rel="icon" href="/img/favicon.ico">
-		
-	
-    <link rel="stylesheet" type="text/css" href="http://resources.changgou.com/css/all.css" />
-    <link rel="stylesheet" type="text/css" href="http://resources.changgou.com/css/pages-weixinpay.css" />
-</head>
+        <link rel="icon" href="img/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="css/all.css" />
+    <link rel="stylesheet" type="text/css" href="css/pages-weixinpay.css" />
+		<script src="js/qrious.js"></script>
+		<script src="js/axios.js"></script>
+		<script src="js/vue.js"></script>
+		<script src="js/getParameter.js"></script>
+	</head>
 
 	<body>
 		<!--head-->
@@ -40,7 +42,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="cart py-container">
+		<div class="cart py-container" id="app">
 			<!--logoArea-->
 			<div class="logoArea">
 				<div class="fl logo"><span class="title">收银台</span></div>
@@ -48,16 +50,16 @@
 			<!--主内容-->
 			<div class="checkout py-container  pay">
 				<div class="checkout-tit">
-					<h4 class="fl tit-txt"><span class="success-icon"></span><span  class="success-info">订单提交成功，请您及时付款！订单号：56789065645</span></h4>
-                    <span class="fr"><em class="sui-lead">应付金额：</em><em  class="orange money">￥17,654</em>元</span>
+					<h4 class="fl tit-txt"><span class="success-icon"></span><span  class="success-info">订单提交成功，请您及时付款！订单号：{{orderno}}</span></h4>
+                    <span class="fr"><em class="sui-lead">应付金额：</em><em  class="orange money">￥{{money}}</em>元</span>
 					<div class="clearfix"></div>
 				</div>				
 				<div class="checkout-steps">
 					<div class="fl weixin">微信支付</div>
                     <div class="fl sao"> 
-                        <p class="red">二维码已过期，刷新页面重新获取二维码。</p>                      
+                        <p class="red">二维码已过期，刷新页面重新获取二维码。</p>
                         <div class="fl code">
-                            <img src="http://resources.changgou.com/img/erweima.png" alt="">
+							<img id="qrious">
                             <div class="saosao">
                                 <p>请使用微信扫一扫</p>
                                 <p>扫描二维码支付</p>
@@ -72,7 +74,6 @@
 				    <p><a href="pay.html" target="_blank">> 其他支付方式</a></p>
 				</div>
 			</div>
-
 		</div>
 		<!-- 底部栏位 -->
 		<!--页面底部-->
@@ -183,7 +184,7 @@
 					</div>
 					<div class="yui3-u-1-6">
 						<h4>帮助中心</h4>
-						<img src="http://resources.changgou.com/img/wx_cz.jpg">
+						<img src="img/wx_cz.jpg">
 					</div>
 				</div>
 			</div>
@@ -214,3 +215,31 @@
 </body>
 
 </html>
+<script type="text/javascript">
+	var outtradeno = getParameter("outtradeno");
+	var total_fee = getParameter("total_fee");
+    var codeUrl;
+	new Vue({
+		el:"#app",
+		data:{
+
+			orderno:'',
+			money:''
+		},
+		created(){
+			this.orderno = outtradeno,
+					this.money=total_fee,
+			axios.post("/api/weixin/pay/create/native",{outtradeno:outtradeno,total_fee:total_fee}).then((res=>{
+				codeUrl= res.data;
+				var qr = new QRious({
+					element:document.getElementById('qrious'),
+					size:250,
+					level:'M',
+					value:codeUrl
+				});
+			}))
+		},
+
+	})
+
+</script>
